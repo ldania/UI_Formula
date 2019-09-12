@@ -1,0 +1,37 @@
+from tkinter import *
+
+
+
+split = 0.5
+
+
+def callback(event):
+    split = 0.9
+
+master = Tk()
+master.geometry('1200x700')
+
+topleft = Frame(master, bd=1, relief=SUNKEN)
+topright = Frame(master, bd=1, relief=SUNKEN)
+botleft = Frame(master, bd=1, relief=SUNKEN)
+botright = Frame(master, bd=1, relief=SUNKEN)
+
+while (1):
+    master.bind("<Button-1>", callback)
+
+    topleft = Frame(master, bd=1, relief=SUNKEN)
+    topright = Frame(master, bd=1, relief=SUNKEN)
+    botleft = Frame(master, bd=1, relief=SUNKEN)
+    botright = Frame(master, bd=1, relief=SUNKEN)
+
+
+    master.update()
+
+
+
+    topleft.place(relheight=split, relwidth=split)
+
+    topright.place(relx=split, relheight=1 - split, relwidth=1 - split)
+
+    botleft.place(rely=1 - split, relheight=1.0 - split, relwidth=1 - split)
+    botright.place(rely=1 - split, relx=1 - split, relheight=1.0 - split, relwidth=1 - split)
