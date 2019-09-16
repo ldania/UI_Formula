@@ -1,4 +1,5 @@
 from tkinter import *
+
 import math
 
 
@@ -45,19 +46,87 @@ class pindex(object):
         self.angle += 1
 
 
+class frames_data:
+    def __init__(self, relx, rely, relheight, relwidth, rel2x = None, rel2y = None, rel2height = None, rel2width = None):
+        
+        self.toggle = 1
+        self.relx = relx
+        self.rely = rely
+        self.relheight = relheight
+        self.relwidth  = relwidth
+        
+        
+        self.rel1x = relx
+        self.rel1y = rely
+        self.rel1height = relheight
+        self.rel1width  = relwidth
+        
+        self.rel2x = rel2x
+        self.rel2y = rel2y
+        self.rel2height = rel2height
+        self.rel2width  = rel2width
 
+    def repos_val(self, rel2x = None, rel2y =  None, rel2height = None, rel2width = None):
+        self.rel2x = rel2x
+        self.rel2y = rel2y
+        self.rel2height = rel2height
+        self.rel2width  = rel2width
 
-class Layout(object):
     
-    def __init__(self, parent):
-        self.split = 0.15
+    def repos(self):
+        if(self.toggle == 1):
+            self.relx = self.rel1x
+            self.rely = self.rel1y
+            self.relheight = self.rel1height
+            self.relwidth = self.rel1width
+            self.toggle = 0
         
-        self.left1 = Frame(parent, bd=1, relief=RAISED)
-        self.left2 = Frame(parent, bd=1, relief=RAISED)
-        self.left3 = Frame(parent, bd=1, relief=RAISED)
+        else:
+            self.relx = self.rel2x
+            self.rely = self.rel2y
+            self.relheight = self.rel2height
+            self.relwidth = self.rel2width
+            self.toggle = 1
+            
         
         
-        self.mid1 = Frame(parent, bd=1, relief=SUNKEN)
+       
+
+class Layout(Frame):
+    
+    def __init__(self, parent =  None):
+        Frame.__init__(self, master)
+        self.master =  master
+
+        
+        
+        
+        self.left1_button = Button(self, text = "Test", command = self.test)
+        self.left2_button = Button(self, text = "Test", command = self.test)
+        self.left3_button = Button(self, text = "Test", command = self.test)
+        
+        
+        self.mid1 = Frame(parent, bd=1, relief=SUNKEN, bg = 'snow')
+        # Left 1 Data and Reposition value
+        """
+        self.left1_data = frames_data( 0, 0, 0.33, 0.15)
+        self.left1_data.repos_val( 0.15, 0.5, 0.5, 0.7)
+        self.left1 = Frame(parent, bd=1, relief=RAISED, bg = 'BLUE')
+        
+        
+        self.left2_data = frames_data( 0, 0.33, 0.33, 0.15)
+        self.left2_data.repos_val( 0.15, 0.5, 0.5, 0.7)
+        self.left2 = Frame(parent, bd=1, relief=RAISED, bg = 'yellow')
+        
+        
+        
+        self.left3_data = frames_data( 0, 0.66, 0.33, 0.15)
+        self.left3_data.repos_val( 0.15, 0.5, 0.5, 0.7)
+        self.left3 = Frame(parent, bd=1, relief=RAISED, bg = 'red')
+        
+        
+        
+
         self.mid2 = Frame(parent, bd=1, relief=SUNKEN)
         
         self.right1 = Frame(parent, bd=1, relief=RAISED)
@@ -65,36 +134,74 @@ class Layout(object):
         self.right3 = Frame(parent, bd=1, relief=RAISED)       
         #self.
         
+        """
         
         
     def display(self):
-        self.left1.place(relx = 0   , rely = 0,     relheight = 0.33  , relwidth = 0.15)
-        self.left2.place(relx = 0   , rely = 0.33,  relheight = 0.33  , relwidth = 0.15)
-        self.left3.place(relx = 0   , rely = 0.66,  relheight = 0.33  , relwidth = 0.15)
+
+        self.pack(fill = BOTH, expand  = 1)
+        self.left1_button.place(relx = 0, rely = 0, relwidth = 0.15, relheight = 0.33)
+        
+        self.pack(fill = BOTH, expand  = 1)
+        self.left2_button.place(relx = 0, rely = 0.33, relwidth = 0.15, relheight = 0.33)
+
+        self.pack(fill = BOTH, expand  = 1)
+        self.left3_button.place(relx = 0, rely = 0.66, relwidth = 0.15, relheight = 0.33)        
+        """
+        self.left1.place(relx = self.left1_data.relx   
+                        ,rely = self.left1_data.rely
+                        ,relheight = self.left1_data.relheight  
+                        ,relwidth = self.left1_data.relwidth)
+        """
+        
+        """
+        
+        self.left2.place(relx = self.left2_data.relx   
+                        ,rely = self.left2_data.rely
+                        ,relheight = self.left2_data.relheight  
+                        ,relwidth = self.left2_data.relwidth)
         
         
+        self.left3.place(relx = self.left3_data.relx   
+                        ,rely = self.left3_data.rely
+                        ,relheight = self.left3_data.relheight  
+                        ,relwidth = self.left3_data.relwidth)
+        """
+        #self.left2.place(relx = 0   , rely = 0.33,  relheight = 0.33  , relwidth = 0.15)
+        #self.left3.place(relx = 0   , rely = 0.66,  relheight = 0.33  , relwidth = 0.15)
         
-        self.mid1.place( relx = 0.15, rely = 0,     relheight  =0.5, relwidth= 1- 2*self.split)
-        self.mid2.place( relx = 0.15, rely = 0.5,   relheight =0.5, relwidth= 1 - 2* self.split)
+        
         
 
-        self.right1.place(relx = 1- self.split  , rely = 0   ,  relheight = 0.33  , relwidth = 0.15)
-        self.right2.place(relx = 1- self.split  , rely = 0.33,  relheight = 0.33  , relwidth = 0.15)
-        self.right3.place(relx = 1- self.split  , rely = 0.66,  relheight = 0.33  , relwidth = 0.15)
         
-  
 
-    def callback(self,event):
-        if( self.split == 0.9):
-            self.split  = 0.5
+        #self.right1.place(relx = 1- self.split  , rely = 0   ,  relheight = 0.33  , relwidth = 0.15)
+        #self.right2.place(relx = 1- self.split  , rely = 0.33,  relheight = 0.33  , relwidth = 0.15)
+        #self.right3.place(relx = 1- self.split  , rely = 0.66,  relheight = 0.33  , relwidth = 0.15)
+               
+        self.mid1.place( relx = 0.15, rely = 0,     relheight  =0.5, relwidth= 0.7)
+        #self.mid2.place( relx = 0.15, rely = 0.5,   relheight =0.5,  relwidth= 1 - 2* self.split)
         
-        else:
-            self.split = 0.9
-            print("EVENT")
-        
+    def split_val(self, split_val):
+        self.old_relx = relx
+        self.old_rely = rely
+        self.old_height = relheight
+        self.old_relwidth = relwidth
+
+
+    def callback(self, event):
+        self.left1_data.repos()
+
         self.display()
-            
+        
+    def test(self):
+        print("Test")
 
+    
+
+
+ 
+        
 
 
 windowX = 1200
@@ -117,8 +224,6 @@ Lay.display()
 
 
 
-
-Lay.left1.bind("<Button-1>", Lay.callback)
 
  
 master.update()
