@@ -8,9 +8,25 @@ split = 0.5
 
 
 
+global colorscheme
+
+colorscheme = [['SteelBlue1', 'mint cream', 'CadetBlue1'],
+               ['SteelBlue2', "navy"      , 'CadetBlue2'],
+               ['SteelBlue3', 'gray'      , 'CadetBlue3']]
 
 
+global colordict 
 
+
+global FormulaOrange1
+FormulaOrange1 =  '#ee6d24'
+
+
+global FormulaBlue1
+FormulaBlue1 =  '#12bfd7'
+
+global FormulaBlack1
+FormulaBlack1 = '#1d323e'
 
 def cos(a):
     return(math.cos(a/math.pi * 180))
@@ -21,166 +37,100 @@ def sin(a):
 
 
 
-
 class pindex(object):
     
     
     def __init__(self, canvas, centerx, centery, size):
         self.angle      = 0
-        
+        self.colordict = 'navy'
         
         self.centerx    = centerx
         self.centery    = centery
         self.size       = size
         self.canvas     = canvas
-        
+    
         self.index      = canvas.create_polygon(
-                [       self.centerx + self.size * cos(angle)     ,  self.centery + self.size * sin(angle)  ,
-                        self.centerx + self.size * cos(angle + 90) , self.centery + self.size * sin(angle + 90),
-                        self.centerx + self.size * cos(angle + 180), self.centery + self.size * sin(angle + 180) ,  
-                        self.centerx + self.size * cos(angle + 270), self.centery + self.size * sin(angle + 270)] ,     
+                [       self.centerx + self.size * cos(self.angle)     ,  self.centery + self.size * sin(self.angle)  ,
+                        self.centerx + self.size * cos(self.angle + 90) , self.centery + self.size * sin(self.angle + 90),
+                        self.centerx + self.size * cos(self.angle + 180), self.centery + self.size * sin(self.angle + 180) ,  
+                        self.centerx + self.size * cos(self.angle + 270), self.centery + self.size * sin(self.angle + 270)] ,     
                         outline='gray', 
                         fill='gray', width=2)
-    
+        self.rotate()
     def rotate(self):
         self.angle += 1
+        
 
 
-class frames_data:
-    def __init__(self, relx, rely, relheight, relwidth, rel2x = None, rel2y = None, rel2height = None, rel2width = None):
-        
-        self.toggle = 1
-        self.relx = relx
-        self.rely = rely
-        self.relheight = relheight
-        self.relwidth  = relwidth
-        
-        
-        self.rel1x = relx
-        self.rel1y = rely
-        self.rel1height = relheight
-        self.rel1width  = relwidth
-        
-        self.rel2x = rel2x
-        self.rel2y = rel2y
-        self.rel2height = rel2height
-        self.rel2width  = rel2width
 
-    def repos_val(self, rel2x = None, rel2y =  None, rel2height = None, rel2width = None):
-        self.rel2x = rel2x
-        self.rel2y = rel2y
-        self.rel2height = rel2height
-        self.rel2width  = rel2width
 
-    
-    def repos(self):
-        if(self.toggle == 1):
-            self.relx = self.rel1x
-            self.rely = self.rel1y
-            self.relheight = self.rel1height
-            self.relwidth = self.rel1width
-            self.toggle = 0
-        
-        else:
-            self.relx = self.rel2x
-            self.rely = self.rel2y
-            self.relheight = self.rel2height
-            self.relwidth = self.rel2width
-            self.toggle = 1
-            
-        
         
        
 
 class Layout(Frame):
     
+    
     def __init__(self, parent =  None):
-        Frame.__init__(self, master)
-        self.master =  master
-
+        Frame.__init__(self, parent)
+        self.master =  parent
+        self.colordict ="navy"
         
-        
-        
-        self.left1_button = Button(self, text = "Test", command = self.test)
-        self.left2_button = Button(self, text = "Test", command = self.test)
-        self.left3_button = Button(self, text = "Test", command = self.test)
-        
-        
-        self.mid1 = Frame(parent, bd=1, relief=SUNKEN, bg = 'snow')
-        # Left 1 Data and Reposition value
-        """
-        self.left1_data = frames_data( 0, 0, 0.33, 0.15)
-        self.left1_data.repos_val( 0.15, 0.5, 0.5, 0.7)
-        self.left1 = Frame(parent, bd=1, relief=RAISED, bg = 'BLUE')
-        
-        
-        self.left2_data = frames_data( 0, 0.33, 0.33, 0.15)
-        self.left2_data.repos_val( 0.15, 0.5, 0.5, 0.7)
-        self.left2 = Frame(parent, bd=1, relief=RAISED, bg = 'yellow')
-        
-        
-        
-        self.left3_data = frames_data( 0, 0.66, 0.33, 0.15)
-        self.left3_data.repos_val( 0.15, 0.5, 0.5, 0.7)
-        self.left3 = Frame(parent, bd=1, relief=RAISED, bg = 'red')
-        
-        
+        self.height_split = 0.333
+        self.width_split = 0.15
         
 
-        self.mid2 = Frame(parent, bd=1, relief=SUNKEN)
         
-        self.right1 = Frame(parent, bd=1, relief=RAISED)
-        self.right2 = Frame(parent, bd=1, relief=RAISED)
-        self.right3 = Frame(parent, bd=1, relief=RAISED)       
-        #self.
+        self.left1_button = Button(self, text = "Angle Steer", command = self.left1_, bg = FormulaOrange1)
+        self.left2_button = Button(self, text = "Temperature Coolant", command = self.left2_, bg = FormulaOrange1)
+        self.left3_button = Button(self, text = "Test", command = self.left3_, bg = FormulaOrange1)
         
-        """
+        self.right1_button = Button(self, text = "Test", command = self.right1_, bg = FormulaBlue1)
+        self.right2_button = Button(self, text = "Test", command = self.right2_, bg = FormulaBlue1)
+        self.right3_button = Button(self, text = "Test", command = self.right3_, bg = FormulaBlue1)
+        
+        
+        self.mid1 = Frame(parent, bd=1, relief=FLAT, bg=FormulaBlack1)
+        self.mid2 = Frame(parent, bd=1, relief=FLAT, bg = 'snow')
+
         
         
     def display(self):
+        
+        
+        
+        self.pack(fill = BOTH, expand  = 1)
+        self.left1_button.place(relx = 0, rely = 0, relwidth = self.width_split, relheight = self.height_split)
+        
+        self.pack(fill = BOTH, expand  = 1)
+        self.left2_button.place(relx = 0, rely =  self.height_split, relwidth = self.width_split, relheight = self.height_split)
 
         self.pack(fill = BOTH, expand  = 1)
-        self.left1_button.place(relx = 0, rely = 0, relwidth = 0.15, relheight = 0.33)
+        self.left3_button.place(relx = 0, rely = 2* self.height_split, relwidth = self.width_split, relheight = self.height_split)        
+        
         
         self.pack(fill = BOTH, expand  = 1)
-        self.left2_button.place(relx = 0, rely = 0.33, relwidth = 0.15, relheight = 0.33)
+        self.right1_button.place(relx = 0.85, rely = 0, relwidth = self.width_split, relheight = self.height_split)
+        
+        self.pack(fill = BOTH, expand  = 1)
+        self.right2_button.place(relx = 1- self.width_split, rely = self.height_split, relwidth = self.width_split, relheight = self.height_split)
 
         self.pack(fill = BOTH, expand  = 1)
-        self.left3_button.place(relx = 0, rely = 0.66, relwidth = 0.15, relheight = 0.33)        
-        """
-        self.left1.place(relx = self.left1_data.relx   
-                        ,rely = self.left1_data.rely
-                        ,relheight = self.left1_data.relheight  
-                        ,relwidth = self.left1_data.relwidth)
-        """
-        
-        """
-        
-        self.left2.place(relx = self.left2_data.relx   
-                        ,rely = self.left2_data.rely
-                        ,relheight = self.left2_data.relheight  
-                        ,relwidth = self.left2_data.relwidth)
+        self.right3_button.place(relx = 1-self.width_split, rely = 2* self.height_split, relwidth = self.width_split, relheight = self.height_split)   
+     
+         
+        self.mid1.place( relx = self.width_split, rely = 0,     relheight  =0.5, relwidth= 1 - 2*self.width_split)
+        self.mid2.place( relx = self.width_split, rely = 0.5,   relheight =0.5,  relwidth= 1 -  2*self.width_split)
         
         
-        self.left3.place(relx = self.left3_data.relx   
-                        ,rely = self.left3_data.rely
-                        ,relheight = self.left3_data.relheight  
-                        ,relwidth = self.left3_data.relwidth)
-        """
-        #self.left2.place(relx = 0   , rely = 0.33,  relheight = 0.33  , relwidth = 0.15)
-        #self.left3.place(relx = 0   , rely = 0.66,  relheight = 0.33  , relwidth = 0.15)
-        
-        
+        C = Canvas(self.mid2, bg = "blue", height = 0.2*self.mid2.winfo_height(), width = 0.3*self.mid2.winfo_width())
+        print(self.mid2.winfo_height())
+        coord = 10, 50, 240, 210
+        arc = C.create_arc(coord, start = 0, extent = 150, fill = "red")
+        line = C.create_line(10,10,200,200,fill = 'white')
+        C.pack()
+        self.screen_Updater()
         
 
-        
-
-        #self.right1.place(relx = 1- self.split  , rely = 0   ,  relheight = 0.33  , relwidth = 0.15)
-        #self.right2.place(relx = 1- self.split  , rely = 0.33,  relheight = 0.33  , relwidth = 0.15)
-        #self.right3.place(relx = 1- self.split  , rely = 0.66,  relheight = 0.33  , relwidth = 0.15)
-               
-        self.mid1.place( relx = 0.15, rely = 0,     relheight  =0.5, relwidth= 0.7)
-        #self.mid2.place( relx = 0.15, rely = 0.5,   relheight =0.5,  relwidth= 1 - 2* self.split)
         
     def split_val(self, split_val):
         self.old_relx = relx
@@ -194,20 +144,53 @@ class Layout(Frame):
 
         self.display()
         
-    def test(self):
-        print("Test")
-
-    
-
-
- 
         
+    def test(self):
+        print("Test") 
+        
+        
+        
+    def screen_Updater(self):
+        print("DO Nothing")
 
 
+
+    def left1_(self):
+        self.colordict = colorscheme[0][1]        
+
+        
+    def left2_(self):
+        self.colordict = colorscheme[0][1]
+
+        
+    def left3_(self):
+        self.colordict = colorscheme[0][2]    
+
+            
+    def right1_(self):
+        self.colordict = colorscheme[2][0]
+
+           
+    def right2_(self):
+        self.colordict = colorscheme[2][1]
+
+           
+    def right3_(self):
+        self.colordict = colorscheme[2][2]
+
+
+
+            
+            
+            
+            
+#START THE MAIN FUNCTION            
+            
 windowX = 1200
 windowY = 840    
  
 winsize = str(windowX) + 'x' + str(windowY)
+global master
 master = Tk()
 master.geometry(winsize)
 
@@ -218,15 +201,7 @@ Lay = Layout(master)
 
 
 
-Lay.display()
-
-
-
-
-
-
- 
-master.update()
+master.after(100, Lay.display)
 master.mainloop()
 
 
