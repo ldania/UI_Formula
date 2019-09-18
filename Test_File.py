@@ -23,6 +23,7 @@ class SimpleApp(object):
                 250, 250, image=tkimage)
             self.master.after_idle(self.update)
             yield
+
             self.canvas.delete(canvas_obj)
             angle += dir
             if(angle == 180 or angle == 0):

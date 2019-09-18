@@ -2,20 +2,11 @@ from tkinter import *
 
 import math
 
+global WindowX            
+windowX = 1200
 
-
-split = 0.5
-
-
-
-global colorscheme
-
-colorscheme = [['SteelBlue1', 'mint cream', 'CadetBlue1'],
-               ['SteelBlue2', "navy"      , 'CadetBlue2'],
-               ['SteelBlue3', 'gray'      , 'CadetBlue3']]
-
-
-global colordict 
+global WindowY
+windowY = 840  
 
 
 global FormulaOrange1
@@ -28,46 +19,81 @@ FormulaBlue1 =  '#12bfd7'
 global FormulaBlack1
 FormulaBlack1 = '#1d323e'
 
-def cos(a):
-    return(math.cos(a/math.pi * 180))
-
-def sin(a):
-    return(math.sin(a/math.pi * 180))
 
 
 
 
-class pindex(object):
+ 
+
+#Window For Second Middle screen. 
+class WinMid:
     
-    
-    def __init__(self, canvas, centerx, centery, size):
-        self.angle      = 0
-        self.colordict = 'navy'
+    def __init__(self, window):
+        self.window = window
+
+        self.angle  = 0
+        self.size = 30
+        self.choice = 0
+        self.p_width = 2
+        self.l1 = 3
         
-        self.centerx    = centerx
-        self.centery    = centery
-        self.size       = size
-        self.canvas     = canvas
-    
-        self.index      = canvas.create_polygon(
-                [       self.centerx + self.size * cos(self.angle)     ,  self.centery + self.size * sin(self.angle)  ,
-                        self.centerx + self.size * cos(self.angle + 90) , self.centery + self.size * sin(self.angle + 90),
-                        self.centerx + self.size * cos(self.angle + 180), self.centery + self.size * sin(self.angle + 180) ,  
-                        self.centerx + self.size * cos(self.angle + 270), self.centery + self.size * sin(self.angle + 270)] ,     
-                        outline='gray', 
-                        fill='gray', width=2)
-        self.rotate()
-    def rotate(self):
-        self.angle += 1
+    def function_choose(self):
         
+        self.centerx = self.window.winfo_width()/2
+        self.centery = self.window.winfo_height()/2
+        self.mid_sc = Canvas(self.window, width = self.window.winfo_width() ,height =  self.window.winfo_height())
+        
+        
+        
+        
+        if(self.choice == 1):
+            self.rotate_Poly()
+        elif(self.choice == 2):
+            self.screen_clear()
+        elif(self.choice == 3):
+            self.draw_rect()
+        else:
+            print("Do Nothing")
 
+
+#Animated Polygon, Animated Polygon currently not updating        
+    def rotate_Poly(self):
+    
+     
+        
+        self.mid_sc.update()
+        self.mid_sc.pack()
+        try:
+            self.mid_sc.delete(self.index)
+        except:
+            print("start")
+
+            
+        self.angle += 1 
+        self.l1 = 10
+        self.index      = self.mid_sc.create_polygon(
+            [       self.centerx + self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.size * math.sin(math.radians(self.angle))  ,
+                    self.centerx + self.l1   * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.size* self.l1 * math.sin(math.radians(self.angle + 90)),
+                    self.centerx + self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.size * math.sin(math.radians(self.angle + 180)) ,  
+                    self.centerx + self.size * math.cos(math.radians(self.angle + 270)), self.centery + self.size * math.sin(math.radians(self.angle + 270))] )    
+        
+    
+        #self.window.after(2000,self.rotate_Poly().next)
+
+        
+    def draw_rect(self):
+        self.mid_sc.pack()
+        self.rect = self.mid_sc.create_rectangle(0, 10, 100, 100, fill='red')
+        self.mid_sc.update()
+    def screen_clear(self):
+        self.mid_sc.delete(self.rect)
 
 
 
         
        
-
-class Layout(Frame):
+#Code for layout and buttons
+class Layout(Frame, WinMid):
     
     
     def __init__(self, parent =  None):
@@ -80,9 +106,9 @@ class Layout(Frame):
         
 
         
-        self.left1_button = Button(self, text = "Angle Steer", command = self.left1_, bg = FormulaOrange1)
+        self.left1_button = Button(self, text = "Angle Steering", command = self.left1_, bg = FormulaOrange1)
         self.left2_button = Button(self, text = "Temperature Coolant", command = self.left2_, bg = FormulaOrange1)
-        self.left3_button = Button(self, text = "Test", command = self.left3_, bg = FormulaOrange1)
+        self.left3_button = Button(self, text = "", command = self.left3_, bg = FormulaOrange1)
         
         self.right1_button = Button(self, text = "Test", command = self.right1_, bg = FormulaBlue1)
         self.right2_button = Button(self, text = "Test", command = self.right2_, bg = FormulaBlue1)
@@ -90,8 +116,11 @@ class Layout(Frame):
         
         
         self.mid1 = Frame(parent, bd=1, relief=FLAT, bg=FormulaBlack1)
+        
         self.mid2 = Frame(parent, bd=1, relief=FLAT, bg = 'snow')
 
+        self.s_pointer = WinMid(self.mid2)
+        
         
         
     def display(self):
@@ -99,84 +128,53 @@ class Layout(Frame):
         
         
         self.pack(fill = BOTH, expand  = 1)
+        
+        
+        
         self.left1_button.place(relx = 0, rely = 0, relwidth = self.width_split, relheight = self.height_split)
-        
-        self.pack(fill = BOTH, expand  = 1)
         self.left2_button.place(relx = 0, rely =  self.height_split, relwidth = self.width_split, relheight = self.height_split)
-
-        self.pack(fill = BOTH, expand  = 1)
         self.left3_button.place(relx = 0, rely = 2* self.height_split, relwidth = self.width_split, relheight = self.height_split)        
-        
-        
-        self.pack(fill = BOTH, expand  = 1)
         self.right1_button.place(relx = 0.85, rely = 0, relwidth = self.width_split, relheight = self.height_split)
-        
-        self.pack(fill = BOTH, expand  = 1)
         self.right2_button.place(relx = 1- self.width_split, rely = self.height_split, relwidth = self.width_split, relheight = self.height_split)
-
-        self.pack(fill = BOTH, expand  = 1)
         self.right3_button.place(relx = 1-self.width_split, rely = 2* self.height_split, relwidth = self.width_split, relheight = self.height_split)   
-     
-         
         self.mid1.place( relx = self.width_split, rely = 0,     relheight  =0.5, relwidth= 1 - 2*self.width_split)
         self.mid2.place( relx = self.width_split, rely = 0.5,   relheight =0.5,  relwidth= 1 -  2*self.width_split)
         
-        
-        C = Canvas(self.mid2, bg = "blue", height = 0.2*self.mid2.winfo_height(), width = 0.3*self.mid2.winfo_width())
-        print(self.mid2.winfo_height())
-        coord = 10, 50, 240, 210
-        arc = C.create_arc(coord, start = 0, extent = 150, fill = "red")
-        line = C.create_line(10,10,200,200,fill = 'white')
-        C.pack()
-        self.screen_Updater()
-        
-
-        
-    def split_val(self, split_val):
-        self.old_relx = relx
-        self.old_rely = rely
-        self.old_height = relheight
-        self.old_relwidth = relwidth
-
-
-    def callback(self, event):
-        self.left1_data.repos()
-
-        self.display()
-        
-        
-    def test(self):
-        print("Test") 
+        self.master.after(10, self.screen_Updater)
         
         
         
+  
+    #Call function to execute the object for the second window screen    
     def screen_Updater(self):
-        print("DO Nothing")
+        self.s_pointer.function_choose()
+        #self.s_pointer.mid_sc.next
+        self.display()
+
 
 
 
     def left1_(self):
-        self.colordict = colorscheme[0][1]        
+        self.s_pointer.choice = 1     
 
         
     def left2_(self):
-        self.colordict = colorscheme[0][1]
+        self.s_pointer.choice = 2     
 
         
     def left3_(self):
-        self.colordict = colorscheme[0][2]    
+        self.s_pointer.choice = 3        
 
             
     def right1_(self):
-        self.colordict = colorscheme[2][0]
+        self.s_pointer.choice = 4     
 
            
     def right2_(self):
-        self.colordict = colorscheme[2][1]
-
+        self.s_pointer.choice = 5     
            
     def right3_(self):
-        self.colordict = colorscheme[2][2]
+        self.s_pointer.choice = 6     
 
 
 
@@ -185,9 +183,7 @@ class Layout(Frame):
             
             
 #START THE MAIN FUNCTION            
-            
-windowX = 1200
-windowY = 840    
+  
  
 winsize = str(windowX) + 'x' + str(windowY)
 global master
@@ -199,9 +195,9 @@ master.geometry(winsize)
     
 Lay = Layout(master)
 
+Lay.display()
 
 
-master.after(100, Lay.display)
 master.mainloop()
 
 
