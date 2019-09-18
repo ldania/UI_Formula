@@ -33,21 +33,19 @@ class MainMid:
         self.arrow_dir = 1
         
         #PointerLengths
-        self.L_N = 0.5
+        self.L_N = 1
         self.L_E = 1
-        self.L_S = 0.5
-        self.L_W = 6
+        self.L_S = 1
+        self.L_W = 7
         
         # ALL attributes of class here
-        self.red_rect = 0   # no rectangle yet
-        self.gre_rect = 0   # no rectangle yet
-        
+        self.rect = 0   # no rectangle yet
         self.index = 0  # no arrow yet
         self.mid_sc = 0 # no canvas yet
         
         
-        self.centerx = 840/2
-        self.centery = 420/2
+        self.centerx = 800/2
+        self.centery = 600/2
         self.mid_sc = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg=FormulaBlack1)
         self.mid_sc.pack()
 
@@ -80,38 +78,20 @@ class MainMid:
 
     def delete_rect(self):
         mydebug(f"WinMid.delete_rect()")
-        if self.red_rect > 0: # avoid list of rects now for simplicity
+        if self.rect > 0: # avoid list of rects now for simplicity
             self.mid_sc.delete(self.red_rect)
-            self.red_rect = 0
-            
-        if self.gre_rect > 0:
             self.mid_sc.delete(self.gre_rect)
-            self.gre_rect = 0
+            self.rect = 0
 
-    def delete_red_rect(self):
-        if self.red_rect > 0: # avoid list of rects now for simplicity
-            self.mid_sc.delete(self.red_rect)
-    
-    def delete_gre_rect(self):
-        if self.gre_rect > 0: # avoid list of rects now for simplicity
-            self.mid_sc.delete(self.gre_rect)
-        
-        
     def draw_rect(self):
-        mydebug(f"WinMid.draw_rect() self.angle={self.angle} ")
-        
-        #delete Old Rectngles
-        self.delete_red_rect()
-        self.delete_gre_rect()
+        mydebug(f"WinMid.draw_rect()")
+        self.delete_rect()
 
-        #update rectangles
-        self.red_rect = self.mid_sc.create_rectangle(40, 300, 140, (180-self.angle/180), fill='red')
-        self.gre_rect = self.mid_sc.create_rectangle(800, 300, 700, (self.angle/180), fill='green')
-
-
+        self.red_rect = self.mid_sc.create_rectangle(100, 100, 100, 100, fill='red')
+        self.gre_rect = self.mid_sc.create_rectangle(200, 100, 100, 100, fill='green')
 
     def screen_clear(self):
-        mydebug(f"WinMid.screen_clear()  ")
+        mydebug(f"WinMid.screen_clear()")
         self.delete_rect()
         self.delete_Poly()    
 
