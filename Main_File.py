@@ -1,8 +1,9 @@
 from tkinter import *
-
+from PIL import ImageTk
+from PIL import Image
 import math
 
-
+#==============================================Global Variables==============================
 global WindowX            
 windowX = 1200
 
@@ -23,7 +24,17 @@ def mydebug(s):
     print(s)
 
 
-class MainMid:
+
+
+
+
+
+
+
+
+#=============================================================================================
+
+class MainMidWindow:
     def __init__(self, window):
         mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
         self.window = window
@@ -32,7 +43,7 @@ class MainMid:
         self.choice = 0
         self.p_width = 2
         self.arrow_dir = 1
-        self.text = [0,0]
+        self.text = []
         
         
         #PointerLengths
@@ -42,8 +53,7 @@ class MainMid:
         self.L_W = 6
         
         # ALL attributes of class here
-        self.red_rect = 0   # no rectangle yet
-        self.gre_rect = 0   # no rectangle yet
+        self.rect = []   # no rectangle yet
         
         self.index = 0  # no arrow yet
         self.mid_sc = 0 # no canvas yet
@@ -51,60 +61,63 @@ class MainMid:
         
         self.centerx = 840/2
         self.centery = 420/2
-        self.mid_sc = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg=FormulaBlack1)
-        self.mid_sc.pack()
+        self.MainMidWindow = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg=FormulaBlack1)
+        self.MainMidWindow.pack()
 
 
-    #Animated Polygon, Animated Polygon currently not updating        
+#Object Deletion functions ==============================================================   
     def delete_Poly(self):
         mydebug(f"WinMid.delete_Poly() self.index={self.index}")
         if self.index > 0: # avoid list of arrows now for simplicity
-            self.mid_sc.delete(self.index)
+            self.MainMidWindow.delete(self.index)
             self.index = 0
     
-    def delete_red_rect(self):
-        if self.red_rect > 0: # avoid list of rects now for simplicity
-            self.mid_sc.delete(self.red_rect)
-            self.red_rect = 0
-            
-    def delete_gre_rect(self):
-        if self.gre_rect > 0: # avoid list of rects now for simplicity
-            self.mid_sc.delete(self.gre_rect)
-            self.gre_rect = 0
+    def delete_rect(self):
+        if len(self.rect) > 0:
+            for i in self.rect:
+                self.MainMidWindow.delete(i)
+            self.rect = []    
     
     def delete_text(self):
         if len(self.text) >  0:
             for i in self.text:
-                self.mid_sc.delete(i)
-            self.text = [0,0]   
+                self.MainMidWindow.delete(i)
+            self.text = []   
+ 
+
+
+
+#========================================================================================
             
     def Update_val(self):
         mydebug(f"WinMid.rotate_Poly() self.angle={self.angle} self.index={self.index}")
         self.angle += self.arrow_dir # .. was 1 (too small to see something)
         
-        
-        
-        
         if(self.angle >= 180 or self.angle <=0 ):
             self.arrow_dir = -self.arrow_dir
+
+
 
         # delete old arrow delete Old Rectngles
         
         self.delete_Poly()                
-        self.delete_red_rect()
-        self.delete_gre_rect()
+        self.delete_rect()
         self.delete_text()
         
-        self.text[0] = self.mid_sc.create_text(60, 320, text =int(((180-self.angle)/180)*100), font=("Purisan", 20), fill="snow" )
-        self.text[1] = self.mid_sc.create_text(720, 320, text = int(((self.angle)/180)*100), font=("Purisan", 20), fill="snow")
+        self.text.append(self.MainMidWindow.create_text(90, 330, text =  '{} {}'.format(int(((180-self.angle)/180)*100), "%") , font=("Purisan", 20), fill="snow"))
+        self.text.append(self.MainMidWindow.create_text(420, 330, text = '{} {}'.format(int(((self.angle)/180)*4000), "rpm"), font=("Purisan", 20), fill="snow"))
+        self.text.append(self.MainMidWindow.create_text(750, 330, text = '{} {}'.format(int(((self.angle)/180)*100),"%"), font=("Purisan", 20), fill="snow"))
+        
+        
+        
         #update rectangles
-        self.red_rect = self.mid_sc.create_rectangle(40, 300, 140, 300-((180-self.angle)/180)*300, fill='red')
-        self.gre_rect = self.mid_sc.create_rectangle(700, 300, 800, 300-(self.angle/180)*300, fill='green')
+        self.rect.append(self.MainMidWindow.create_rectangle(40, 300, 140, 300-((180-self.angle)/180)*300, fill='red'))
+        self.rect.append(self.MainMidWindow.create_rectangle(700, 300, 800, 300-(self.angle/180)*300, fill='green'))
         
         
         
         # draw new arrow
-        self.index = self.mid_sc.create_polygon(
+        self.index = self.MainMidWindow.create_polygon(
             [       self.centerx + self.L_E  * self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.L_E * self.size * math.sin(math.radians(self.angle))  ,
                     self.centerx + self.L_S  * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.L_S * self.size*  math.sin(math.radians(self.angle + 90)),
                     self.centerx + self.L_W  * self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.L_W * self.size * math.sin(math.radians(self.angle + 180)) ,  
@@ -122,8 +135,8 @@ class MainMid:
 
 
 
-#Window For Second Middle screen. 
-class WinMid:
+#Window For Second Middle screen. ==============================
+class BotMidWindow:
 
     def __init__(self, window):
         mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
@@ -133,21 +146,23 @@ class WinMid:
         self.choice = 0
         self.p_width = 2
         self.l1 = 3
+        
+        
         # ALL attributes of class here
         self.rect = 0   # no rectangle yet
         self.index = 0  # no arrow yet
-        self.mid_sc = 0 # no canvas yet
+        self.BotCanvas = 0 # no canvas yet
 
     def function_choose(self):
         mydebug(f"WinMid.function_choose() self.choice={self.choice}")
 
         # don't create new canvas each call!
         # i would prefer this in __init__() but this requires rework in Layout()
-        if self.mid_sc == 0:
+        if self.BotCanvas == 0:
             self.centerx = self.window.winfo_width()/2
             self.centery = self.window.winfo_height()/2
-            self.mid_sc = Canvas(self.window, width= self.window.winfo_width(), height=self.window.winfo_height())
-            self.mid_sc.pack()
+            self.BotCanvas = Canvas(self.window, width= self.window.winfo_width(), height=self.window.winfo_height())
+            self.BotCanvas.pack()
 
         if(self.choice == 1):
             self.rotate_Poly()
@@ -167,7 +182,7 @@ class WinMid:
     def delete_Poly(self):
         mydebug(f"WinMid.delete_Poly() self.index={self.index}")
         if self.index > 0: # avoid list of arrows now for simplicity
-            self.mid_sc.delete(self.index)
+            self.BonCanvas.delete(self.index)
             self.index = 0
     
     def rotate_Poly(self):
@@ -177,7 +192,7 @@ class WinMid:
         # delete old arrow
         self.delete_Poly() 
         # draw new arrow
-        self.index = self.mid_sc.create_polygon(
+        self.index = self.BotCanvas.create_polygon(
             [       self.centerx + self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.size * math.sin(math.radians(self.angle))  ,
                     self.centerx + self.l1   * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.size* self.l1 * math.sin(math.radians(self.angle + 90)),
                     self.centerx + self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.size * math.sin(math.radians(self.angle + 180)) ,  
@@ -185,24 +200,35 @@ class WinMid:
             ] 
         )    
 
+
+##=====WINDOWS 2 TEMPERATURE COOLANT=====
     def delete_rect(self):
         mydebug(f"WinMid.delete_rect()")
         if self.rect > 0: # avoid list of rects now for simplicity
-            self.mid_sc.delete(self.rect)
+            self.BotCanvas.delete(self.rect)
             self.rect = 0
 
     def draw_rect(self):
         mydebug(f"WinMid.draw_rect()")
         self.delete_rect()
-        self.rect = self.mid_sc.create_rectangle(0, 10, 100, 100, fill='red')
-
+        self.rect = self.BotCanvas.create_rectangle(0, 10, 100, 100, fill='red')
+        
+      
     def screen_clear(self):
         mydebug(f"WinMid.screen_clear()")
         self.delete_rect()
         self.delete_Poly()
 
+
+
+
+
+
+
+
+
 #Code for layout and buttons
-class Layout(Frame, WinMid):
+class Layout(Frame, BotMidWindow):
 
     def __init__(self, parent =  None):
         Frame.__init__(self, parent)
@@ -222,8 +248,8 @@ class Layout(Frame, WinMid):
 
         self.mid1 = Frame(parent, bd=1, relief=FLAT, bg=FormulaBlack1)
         self.mid2 = Frame(parent, bd=1, relief=FLAT, bg = 'snow')
-        self.s_pointer = WinMid(self.mid2)
-        self.MainMid = MainMid(self.mid1)
+        self.BotMid = BotMidWindow(self.mid2)
+        self.MainMid = MainMidWindow(self.mid1)
 
     def display(self):
         self.pack(fill = BOTH, expand  = 1)
@@ -244,34 +270,39 @@ class Layout(Frame, WinMid):
 
     #Call function to execute the object for the second window screen    
     def screen_Updater(self):
-        self.s_pointer.function_choose()
+        self.BotMid.function_choose()
         self.MainMid.Update_val()
         #self.s_pointer.mid_sc.next
         self.display()
 
     def left1_(self):
-        self.s_pointer.choice = 1     
+        self.BotMid.choice = 1     
 
     def left2_(self):
-        self.s_pointer.choice = 2     
+        self.BotMid.choice = 2     
 
     def left3_(self):
-        self.s_pointer.choice = 3        
+        self.BotMid.choice = 3        
 
     def right1_(self):
-        self.s_pointer.choice = 4     
+        self.BotMid.choice = 4     
 
     def right2_(self):
-        self.s_pointer.choice = 5     
+        self.BotMid.choice = 5     
 
     def right3_(self):
-        self.s_pointer.choice = 6     
+        self.BotMid.choice = 6     
 
             
             
+          
+        
+        
+        
+        
+        
             
-            
-#START THE MAIN FUNCTION            
+#START THE MAIN FUNCTION       ========================================================================     
 winsize = str(windowX) + 'x' + str(windowY)
 global master
 master = Tk()
