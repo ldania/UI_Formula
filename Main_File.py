@@ -10,13 +10,98 @@ split = 0.5
 
 global colorscheme
 
+<<<<<<< Updated upstream
 colorscheme = [['SteelBlue1', 'mint cream', 'CadetBlue1'],
                ['SteelBlue2', "navy"      , 'CadetBlue2'],
                ['SteelBlue3', 'gray'      , 'CadetBlue3']]
 
 
 global colordict 
+=======
+class MainMid:
+    def __init__(self, window):
+        mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
+        self.window = window
+        self.angle  = 0
+        self.size = 30
+        self.choice = 0
+        self.p_width = 2
+        self.arrow_dir = 1
+        
+        #PointerLengths
+        self.L_N = 0.5
+        self.L_E = 1
+        self.L_S = 0.5
+        self.L_W = 6
+        
+        # ALL attributes of class here
+        self.red_rect = 0   # no rectangle yet
+        self.gre_rect = 0   # no rectangle yet
+        
+        self.index = 0  # no arrow yet
+        self.mid_sc = 0 # no canvas yet
+        
+        
+        self.centerx = 840/2
+        self.centery = 420/2
+        self.mid_sc = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg=FormulaBlack1)
+        self.mid_sc.pack()
 
+
+    #Animated Polygon, Animated Polygon currently not updating        
+    def delete_Poly(self):
+        mydebug(f"WinMid.delete_Poly() self.index={self.index}")
+        if self.index > 0: # avoid list of arrows now for simplicity
+            self.mid_sc.delete(self.index)
+            self.index = 0
+    
+    def delete_red_rect(self):
+        if self.red_rect > 0: # avoid list of rects now for simplicity
+            self.mid_sc.delete(self.red_rect)
+            self.red_rect = 0
+            
+    def delete_gre_rect(self):
+        if self.gre_rect > 0: # avoid list of rects now for simplicity
+            self.mid_sc.delete(self.gre_rect)
+            self.gre_rect = 0
+            
+            
+    def Update_val(self):
+        mydebug(f"WinMid.rotate_Poly() self.angle={self.angle} self.index={self.index}")
+        self.angle += self.arrow_dir # .. was 1 (too small to see something)
+        
+        
+        
+        
+        if(self.angle >= 180 or self.angle <=0 ):
+            self.arrow_dir = -self.arrow_dir
+
+        # delete old arrow delete Old Rectngles
+        
+        self.delete_Poly()                
+        self.delete_red_rect()
+        self.delete_gre_rect()
+
+
+
+        #update rectangles
+        self.red_rect = self.mid_sc.create_rectangle(40, 300, 140, ((180-self.angle)/180)*100, fill='red')
+        self.gre_rect = self.mid_sc.create_rectangle(800, 300, 700, (self.angle/180)*100, fill='green')
+        # draw new arrow
+        self.index = self.mid_sc.create_polygon(
+            [       self.centerx + self.L_E  * self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.L_E * self.size * math.sin(math.radians(self.angle))  ,
+                    self.centerx + self.L_S  * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.L_S * self.size*  math.sin(math.radians(self.angle + 90)),
+                    self.centerx + self.L_W  * self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.L_W * self.size * math.sin(math.radians(self.angle + 180)) ,  
+                    self.centerx + self.L_N *  self.size * math.cos(math.radians(self.angle + 270)), self.centery + self.L_N  * self.size * math.sin(math.radians(self.angle + 270))
+            ] , fill='snow'        )    
+        
+
+
+   
+    
+>>>>>>> Stashed changes
+
+        
 
 global FormulaOrange1
 FormulaOrange1 =  '#ee6d24'
@@ -64,8 +149,148 @@ class pindex(object):
 
 
 
+<<<<<<< Updated upstream
         
        
+=======
+    def __init__(self, window):
+        mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
+        self.window = window
+        self.angle  = 0
+        self.temp = 0
+        self.size = 30
+        self.choice = 0
+        self.p_width = 2
+        self.arrow_dir = 1
+        self.temp_dir  = 0.3
+            
+        
+        #PointerLengths
+        self.L_N = 1
+        self.L_E = 1
+        self.L_S = 1
+        self.L_W = 7
+        
+        # ALL attributes of class here
+        self.rect = 0   # no rectangle yet
+        self.index = 0  # no arrow yet
+        self.mid_sc = 0 # no canvas yet
+        
+        self.color = '#000000'
+        self.text_temp = 0
+        
+        
+        
+
+
+
+
+    def function_choose(self):
+        mydebug(f"WinMid.function_choose() self.choice={self.choice}")
+
+        # don't create new canvas each call!
+        # i would prefer this in __init__() but this requires rework in Layout()
+        if self.mid_sc == 0:
+            self.centerx = self.window.winfo_width()/2
+            self.centery = self.window.winfo_height()/2
+            self.mid_sc = Canvas(self.window, width= self.window.winfo_width(), height=self.window.winfo_height())
+            self.mid_sc.pack()
+
+        if(self.choice == 1):
+            self.rotate_Poly()
+        elif(self.choice == 2):
+            self.screen_clear()
+        elif(self.choice == 3):
+            self.draw_rect()
+        elif(self.choice == 4):
+            self.temp_gradient()
+        else:
+            print("Do Nothing")
+        
+        # all drawing done
+        # forget actual button press now
+        # => no endless creation of rectangles...
+        #self.choice = 1
+
+    #Animated Polygon, Animated Polygon currently not updating        
+    def delete_Poly(self):
+        mydebug(f"WinMid.delete_Poly() self.index={self.index}")
+        if self.index > 0: # avoid list of arrows now for simplicity
+            self.mid_sc.delete(self.index)
+            self.index = 0
+    
+    
+    def colorize(self,a,b,c):
+        self.color = '#%02x%02x%02x' % (a, b, c)
+        print(self.color, b)
+
+        
+    def temp_gradient(self):
+        self.temp += self.temp_dir # .. was 1 (too small to see something)
+        
+        if(self.temp >= 250 or self.temp <=0 ):
+            self.temp_dir = -self.temp_dir
+            
+            
+        self.del_temp()   
+        self.colorize(255, self.angle, 0)
+        mydebug(f"WinMid.temp_gradient() self.temp_gradient={self.angle}")
+        self.mid_sc.configure(bg = self.color)
+
+            
+            
+        self.text_temp = self.mid_sc.create_text(420,240, text = int(self.temp/250*60) , fill="black", font = ("Purisa", 30))
+    
+    def del_temp(self):
+        if(self.text_temp > 0):
+            self.mid_sc.delete(self.text_temp)
+            self.text_temp = 0
+    
+    
+    
+    
+    
+    
+    
+    def rotate_Poly(self):
+        mydebug(f"WinMid.rotate_Poly() self.angle={self.angle} self.index={self.index}")
+        self.angle += self.arrow_dir # .. was 1 (too small to see something)
+        
+        if(self.angle >= 180 or self.angle <=0 ):
+            self.arrow_dir = -self.arrow_dir
+
+        # delete old arrow
+        self.delete_Poly() 
+        # draw new arrow
+        self.index = self.mid_sc.create_polygon(
+            [       self.centerx + self.L_E  * self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.L_E * self.size * math.sin(math.radians(self.angle))  ,
+                    self.centerx + self.L_S  * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.L_S * self.size*  math.sin(math.radians(self.angle + 90)),
+                    self.centerx + self.L_W  * self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.L_W * self.size * math.sin(math.radians(self.angle + 180)) ,  
+                    self.centerx + self.L_N *  self.size * math.cos(math.radians(self.angle + 270)), self.centery + self.L_N  * self.size * math.sin(math.radians(self.angle + 270))
+            ] 
+        )    
+
+
+
+    def delete_rect(self):
+        mydebug(f"WinMid.delete_rect()")
+        if self.rect > 0: # avoid list of rects now for simplicity
+            self.mid_sc.delete(self.rect)
+            self.rect = 0
+
+    def draw_rect(self):
+        mydebug(f"WinMid.draw_rect()")
+        self.delete_rect()
+        self.rect = self.mid_sc.create_rectangle(0, 10, 100, 100, fill='red')
+
+    def screen_clear(self):
+        mydebug(f"WinMid.screen_clear()")
+        self.delete_rect()
+        self.delete_Poly()
+
+#Code for layout and buttons
+class Layout(Frame, WinMid):
+>>>>>>> Stashed changes
 
 class Layout(Frame):
     
@@ -91,6 +316,10 @@ class Layout(Frame):
         
         self.mid1 = Frame(parent, bd=1, relief=FLAT, bg=FormulaBlack1)
         self.mid2 = Frame(parent, bd=1, relief=FLAT, bg = 'snow')
+<<<<<<< Updated upstream
+=======
+        self.bot_window = WinMid(self.mid2)
+>>>>>>> Stashed changes
 
         
         
@@ -142,6 +371,15 @@ class Layout(Frame):
     def callback(self, event):
         self.left1_data.repos()
 
+<<<<<<< Updated upstream
+=======
+    #Call function to execute the object for the second window screen    
+    def screen_Updater(self):
+        self.bot_window.function_choose()
+        self.main_window.Update_val()
+#        self.main_window.draw_rect()
+        #self.s_pointer.mid_sc.next
+>>>>>>> Stashed changes
         self.display()
         
         
@@ -156,19 +394,35 @@ class Layout(Frame):
 
 
     def left1_(self):
+<<<<<<< Updated upstream
         self.colordict = colorscheme[0][1]        
+=======
+        self.bot_window.choice = 1     
+>>>>>>> Stashed changes
 
         
     def left2_(self):
+<<<<<<< Updated upstream
         self.colordict = colorscheme[0][1]
+=======
+        self.bot_window.choice = 2     
+>>>>>>> Stashed changes
 
         
     def left3_(self):
+<<<<<<< Updated upstream
         self.colordict = colorscheme[0][2]    
+=======
+        self.bot_window.choice = 3        
+>>>>>>> Stashed changes
 
             
     def right1_(self):
+<<<<<<< Updated upstream
         self.colordict = colorscheme[2][0]
+=======
+        self.bot_window.choice = 4     
+>>>>>>> Stashed changes
 
            
     def right2_(self):
