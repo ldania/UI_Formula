@@ -26,17 +26,70 @@ def mydebug(s):
 
 
 
-##============================================================================================
+##====Simple Approach to Drawing A Polygon============================================================================================
+
+class Poly:
+    
+    def __init__(self, window, centerx, centery, corners):
+        self.centerx = centerx
+        self.centery = centery
+        self.window =  window
+        
+        self.angle  = 15
+        self.corners = corners
+        self.corner_points = []
+        self.corner_sides = []
+        self.size = 30
+        self.angle_step = int(360/corners)
+        self.pol = 0
+        mydebug(f'self.angle_step {self.angle_step}')
 
 
 
+        for i in range(0, self.corners):
+            self.corner_sides.append(1)
+         
+            
+        for i in range(0, self.corners):
+            self.corner_points.append([  int(self.centerx + self.corner_sides[i]      * self.size * math.cos(math.radians(self.angle + i * self.angle_step)))      
+                                        ,int(self.centery + self.corner_sides[i]      * self.size * math.sin(math.radians(self.angle + i * self.angle_step))  )])
+    
+    def delete(self):
+        #mydebug(f"WinMid.delete_Poly() self.pol={self.pol}")
+        if self.pol > 0: # avoid list of arrows now for simplicity
+            self.window.delete(self.pol)
+            self.pol = 0      
+     
+        
+        
+    def draw(self):
+        
+        mydebug(f"PolyDraw")
+        self.delete()
+        for i in range(0, self.corners):
+            self.corner_points[i][0] = int(self.centerx + self.corner_sides[i]      * self.size * math.cos(math.radians(self.angle + i * self.angle_step)))
+            self.corner_points[i][1] = int(self.centery + self.corner_sides[i]      * self.size * math.sin(math.radians(self.angle + i * self.angle_step)))
+        
+        mydebug(f"WinMid.draw() self.pol={self.pol}")
+        
+        print(self.corner_points)   
+                    # draw new arrow
+        self.pol = self.window.create_polygon(self.corner_points, fill='snow')   
+        mydebug(f"poly.draw() self.pol={self.pol}")
+    def set_angle(self, val):
+        self.angle += val
+        print(self.angle)
+        
 
+    
+
+        
 
 #=============================================================================================
 
 class MainMidWindow:
     def __init__(self, window):
-        mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
+        #mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
         self.window = window
         self.angle  = 0
         self.size = 30
@@ -46,83 +99,33 @@ class MainMidWindow:
         self.text = []
         
         
-        #PointerLengths
-        self.L_N = 0.5
-        self.L_E = 1
-        self.L_S = 0.5
-        self.L_W = 6
-        
-        # ALL attributes of class here
-        self.rect = []   # no rectangle yet
-        
-        self.index = 0  # no arrow yet
-        self.mid_sc = 0 # no canvas yet
+
         
         
         self.centerx = 840/2
         self.centery = 420/2
         self.MainMidWindow = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg=FormulaBlack1)
         self.MainMidWindow.pack()
-
-
+        
+        self.arrow = Poly(self.MainMidWindow, 200, 100, 3)
+        
+    def Update_val(self):
+        
+        self.arrow.draw()
+         
 #Object Deletion functions ==============================================================   
-    def delete_Poly(self):
-        mydebug(f"WinMid.delete_Poly() self.index={self.index}")
-        if self.index > 0: # avoid list of arrows now for simplicity
-            self.MainMidWindow.delete(self.index)
-            self.index = 0
-    
-    def delete_rect(self):
-        if len(self.rect) > 0:
-            for i in self.rect:
-                self.MainMidWindow.delete(i)
-            self.rect = []    
-    
-    def delete_text(self):
-        if len(self.text) >  0:
-            for i in self.text:
-                self.MainMidWindow.delete(i)
-            self.text = []   
- 
 
+    
+ 
 
 
 #========================================================================================
             
-    def Update_val(self):
-        mydebug(f"WinMid.rotate_Poly() self.angle={self.angle} self.index={self.index}")
-        self.angle += self.arrow_dir # .. was 1 (too small to see something)
-        
-        if(self.angle >= 180 or self.angle <=0 ):
-            self.arrow_dir = -self.arrow_dir
 
+        
+        
+        
 
-
-        # delete old arrow delete Old Rectngles
-        
-        self.delete_Poly()                
-        self.delete_rect()
-        self.delete_text()
-        
-        self.text.append(self.MainMidWindow.create_text(90, 330, text =  '{} {}'.format(int(((180-self.angle)/180)*100), "%") , font=("Purisan", 20), fill="snow"))
-        self.text.append(self.MainMidWindow.create_text(420, 330, text = '{} {}'.format(int(((self.angle)/180)*4000), "rpm"), font=("Purisan", 20), fill="snow"))
-        self.text.append(self.MainMidWindow.create_text(750, 330, text = '{} {}'.format(int(((self.angle)/180)*100),"%"), font=("Purisan", 20), fill="snow"))
-        
-        
-        
-        #update rectangles
-        self.rect.append(self.MainMidWindow.create_rectangle(40, 300, 140, 300-((180-self.angle)/180)*300, fill='red'))
-        self.rect.append(self.MainMidWindow.create_rectangle(700, 300, 800, 300-(self.angle/180)*300, fill='green'))
-        
-        
-        
-        # draw new arrow
-        self.index = self.MainMidWindow.create_polygon(
-            [      [ self.centerx + self.L_E  * self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.L_E * self.size * math.sin(math.radians(self.angle))  ],
-                   [ self.centerx + self.L_S  * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.L_S * self.size*  math.sin(math.radians(self.angle + 90))],
-                   [ self.centerx + self.L_W  * self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.L_W * self.size * math.sin(math.radians(self.angle + 180))] ,  
-                   [ self.centerx + self.L_N *  self.size * math.cos(math.radians(self.angle + 270)), self.centery + self.L_N  * self.size * math.sin(math.radians(self.angle + 270))]
-            ] , fill='snow'        )    
         
 
 
@@ -131,6 +134,14 @@ class MainMidWindow:
 
 
         
+
+    
+    
+    
+    
+    
+    
+    
 
 
 
@@ -152,6 +163,11 @@ class BotMidWindow:
         self.rect = 0   # no rectangle yet
         self.index = 0  # no arrow yet
         self.BotCanvas = 0 # no canvas yet
+        
+        
+        
+        
+        
 
     def function_choose(self):
         mydebug(f"WinMid.function_choose() self.choice={self.choice}")
@@ -165,7 +181,7 @@ class BotMidWindow:
             self.BotCanvas.pack()
 
         if(self.choice == 1):
-            self.rotate_Poly()
+            self.arrow.draw()
         elif(self.choice == 2):
             self.screen_clear()
         elif(self.choice == 3):
@@ -178,46 +194,9 @@ class BotMidWindow:
         # => no endless creation of rectangles...
         self.choice = 0
 
-    #Animated Polygon, Animated Polygon currently not updating        
-    def delete_Poly(self):
-        mydebug(f"WinMid.delete_Poly() self.index={self.index}")
-        if self.index > 0: # avoid list of arrows now for simplicity
-            self.BonCanvas.delete(self.index)
-            self.index = 0
+
+
     
-    def rotate_Poly(self):
-        mydebug(f"WinMid.rotate_Poly() self.angle={self.angle} self.index={self.index}")
-        self.angle += 10 # .. was 1 (too small to see something)
-        self.l1 += 0
-        # delete old arrow
-        self.delete_Poly() 
-        # draw new arrow
-        self.index = self.BotCanvas.create_polygon(
-            [       self.centerx + self.size * math.cos(math.radians(self.angle))      ,  self.centery + self.size * math.sin(math.radians(self.angle))  ,
-                    self.centerx + self.l1   * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.size* self.l1 * math.sin(math.radians(self.angle + 90)),
-                    self.centerx + self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.size * math.sin(math.radians(self.angle + 180)) ,  
-                    self.centerx + self.size * math.cos(math.radians(self.angle + 270)), self.centery + self.size * math.sin(math.radians(self.angle + 270))
-            ] )    
-
-
-##=====WINDOWS 2 TEMPERATURE COOLANT=====
-    def delete_rect(self):
-        mydebug(f"WinMid.delete_rect()")
-        if self.rect > 0: # avoid list of rects now for simplicity
-            self.BotCanvas.delete(self.rect)
-            self.rect = 0
-
-    def draw_rect(self):
-        mydebug(f"WinMid.draw_rect()")
-        self.delete_rect()
-        self.rect = self.BotCanvas.create_rectangle(0, 10, 100, 100, fill='red')
-        
-      
-    def screen_clear(self):
-        mydebug(f"WinMid.screen_clear()")
-        self.delete_rect()
-        self.delete_Poly()
-
 
 
 
@@ -269,6 +248,7 @@ class Layout(Frame, BotMidWindow):
 
     #Call function to execute the object for the second window screen    
     def screen_Updater(self):
+        self.MainMid.arrow.set_angle(1)
         self.BotMid.function_choose()
         self.MainMid.Update_val()
         #self.s_pointer.mid_sc.next
