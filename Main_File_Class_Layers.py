@@ -28,21 +28,22 @@ def mydebug(s):
 
 ##====Simple Approach to Drawing A Polygon============================================================================================
 
-class Poly:
+class poly:
     
     def __init__(self, window, centerx, centery, corners):
         self.centerx = centerx
         self.centery = centery
         self.window =  window
         
-        self.angle  = 15
+        self.angle  = 0
         self.corners = corners
         self.corner_points = []
         self.corner_sides = []
-        self.size = 30
+        self.size = 1
         self.angle_step = int(360/corners)
         self.pol = 0
-        mydebug(f'self.angle_step {self.angle_step}')
+        self.fill = 'snow'
+        #mydebug(f'self.angle_step {self.angle_step}')
 
 
 
@@ -64,25 +65,137 @@ class Poly:
         
     def draw(self):
         
-        mydebug(f"PolyDraw")
+        #mydebug(f"PolyDraw")
         self.delete()
         for i in range(0, self.corners):
             self.corner_points[i][0] = int(self.centerx + self.corner_sides[i]      * self.size * math.cos(math.radians(self.angle + i * self.angle_step)))
             self.corner_points[i][1] = int(self.centery + self.corner_sides[i]      * self.size * math.sin(math.radians(self.angle + i * self.angle_step)))
         
-        mydebug(f"WinMid.draw() self.pol={self.pol}")
+        #mydebug(f"WinMid.draw() self.pol={self.pol}")
         
-        print(self.corner_points)   
+        #print(self.corner_points)   
                     # draw new arrow
-        self.pol = self.window.create_polygon(self.corner_points, fill='snow')   
-        mydebug(f"poly.draw() self.pol={self.pol}")
+        self.pol = self.window.create_polygon(self.corner_points, fill=self.fill, outline = self.outline, relief = RAISED)   
+        #mydebug(f"poly.draw() self.pol={self.pol}")
+  
+
+
+      
     def set_angle(self, val):
         self.angle += val
         print(self.angle)
         
-
     
+    def set_size(self, val):
+        for i in range(0, self.corners):
+            self.corner_sides[i-1] = int(val)
+        
+        
+    def stretch_corner(self, point, val):
 
+        if(type(point) == int):
+            if(point > self.corners or point == 0):
+                print("out of bounds")
+                return 0
+            self.corner_sides[point-1] = self.corner_sides[point-1]* int(val)
+        else:
+            for i in point:
+                if(i > self.corners or i == 0):
+                    print("out of bounds")
+                    next
+                else:
+                    self.corner_sides[i-1] = self.corner_sides[i-1] * int(val)
+  
+
+
+      
+    def set_color(self, fill = None, outline = None):
+        if(type(fill or outline) != str):
+            print("error")
+        else:
+            self.fill = fill
+            self.outline = outline
+            
+
+
+##====Simple Approach to Drawing A Polygon============================================================================================
+
+class rect:
+    
+    def __init__(self, window, centerx, centery, corners):
+        self.centerx = centerx
+        self.centery = centery
+        self.window =  window
+        
+        self.angle  = 0
+        self.corners = corners
+        self.corner_points = []
+        self.corner_sides = []
+        self.size = 30
+
+        self.pol = 0
+        self.fill = 'snow'
+        #mydebug(f'self.angle_step {self.angle_step}')
+
+
+
+    def delete(self):
+        #mydebug(f"WinMid.delete_Poly() self.pol={self.pol}")
+        if self.pol > 0: # avoid list of arrows now for simplicity
+            self.window.delete(self.pol)
+            self.pol = 0      
+     
+        
+        
+    def draw(self):
+        
+        self.delete()
+        for i in range(0, self.corners):
+            self.corner_points[i][0] = int(self.centerx + self.corner_sides[i]      * self.size * math.cos(math.radians(self.angle + i * self.angle_step)))
+            self.corner_points[i][1] = int(self.centery + self.corner_sides[i]      * self.size * math.sin(math.radians(self.angle + i * self.angle_step)))
+        
+
+        self.pol = self.window.create_polygon(self.corner_points, fill=self.fill, outline = self.outline)   
+
+  
+
+
+      
+    def set_angle(self, val):
+        self.angle += val
+        print(self.angle)
+        
+    
+    def set_size(self, val):
+        for i in self.corners:
+            self.corner_sides[i-1] = int(val)
+        
+        
+    def stretch_corner(self, point, val):
+
+        if(type(point) == int):
+            if(point > self.corners or point == 0):
+                print("out of bounds")
+                return 0
+            self.corner_sides[point-1] = self.corner_sides[point-1] * int(val)
+        else:
+            for i in point:
+                if(i > self.corners or i == 0):
+                    print("out of bounds")
+                    next
+                else:
+                    self.corner_sides[i-1] = self.corner_sides[i-1] * int(val)
+  
+
+
+      
+    def set_color(self, fill = None, outline = None):
+        if(type(fill or outline) != str):
+            print("error")
+        else:
+            self.fill = fill
+            self.outline = outline
+            
         
 
 #=============================================================================================
@@ -107,10 +220,16 @@ class MainMidWindow:
         self.MainMidWindow = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg=FormulaBlack1)
         self.MainMidWindow.pack()
         
-        self.arrow = Poly(self.MainMidWindow, 200, 100, 3)
+        self.arrow = poly(self.MainMidWindow, 200, 100, 6)
+        self.arrow.set_size(30)
+        
+        
+        self.arrow.stretch_corner(1, 4)
+        self.arrow.set_color(fill = 'blue', outline = 'red')
+
+       
         
     def Update_val(self):
-        
         self.arrow.draw()
          
 #Object Deletion functions ==============================================================   
@@ -147,16 +266,12 @@ class MainMidWindow:
 
 
 #Window For Second Middle screen. ==============================
-class BotMidWindow:
+class BottomWindow:
 
     def __init__(self, window):
-        mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
+        #mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
         self.window = window
-        self.angle  = 0
-        self.size = 30
-        self.choice = 0
-        self.p_width = 2
-        self.l1 = 3
+   
         
         
         # ALL attributes of class here
@@ -168,9 +283,10 @@ class BotMidWindow:
         
         
         
+        
 
     def function_choose(self):
-        mydebug(f"WinMid.function_choose() self.choice={self.choice}")
+        #mydebug(f"WinMid.function_choose() self.choice={self.choice}")
 
         # don't create new canvas each call!
         # i would prefer this in __init__() but this requires rework in Layout()
@@ -180,14 +296,7 @@ class BotMidWindow:
             self.BotCanvas = Canvas(self.window, width= self.window.winfo_width(), height=self.window.winfo_height())
             self.BotCanvas.pack()
 
-        if(self.choice == 1):
-            self.arrow.draw()
-        elif(self.choice == 2):
-            self.screen_clear()
-        elif(self.choice == 3):
-            self.draw_rect()
-        else:
-            print("Do Nothing")
+
         
         # all drawing done
         # forget actual button press now
@@ -206,7 +315,7 @@ class BotMidWindow:
 
 
 #Code for layout and buttons
-class Layout(Frame, BotMidWindow):
+class Layout(Frame, BottomWindow):
 
     def __init__(self, parent =  None):
         Frame.__init__(self, parent)
@@ -224,10 +333,20 @@ class Layout(Frame, BotMidWindow):
         self.right2_button = Button(self, text = "Test", command = self.right2_, bg = FormulaBlue1)
         self.right3_button = Button(self, text = "Test", command = self.right3_, bg = FormulaBlue1)
 
+
+
+
         self.mid1 = Frame(parent, bd=1, relief=FLAT, bg=FormulaBlack1)
         self.mid2 = Frame(parent, bd=1, relief=FLAT, bg = 'snow')
-        self.BotMid = BotMidWindow(self.mid2)
+        
+        
+        
+ ##=============================================Main and Bot window frames.       
+        
         self.MainMid = MainMidWindow(self.mid1)
+        self.BotMid = BottomWindow(self.mid2)
+        
+
 
     def display(self):
         self.pack(fill = BOTH, expand  = 1)
@@ -244,7 +363,7 @@ class Layout(Frame, BotMidWindow):
         self.mid1.place( relx = self.width_split, rely = 0,     relheight  =0.5, relwidth= 1 - 2*self.width_split)
         self.mid2.place( relx = self.width_split, rely = 0.5,   relheight =0.5,  relwidth= 1 -  2*self.width_split)
 
-        self.master.after(100, self.screen_Updater)
+        self.master.after(10, self.screen_Updater)
 
     #Call function to execute the object for the second window screen    
     def screen_Updater(self):
