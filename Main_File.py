@@ -1,4 +1,31 @@
 from tkinter import *
+<<<<<<< Updated upstream
+=======
+from PIL import ImageTk
+from PIL import Image
+import math
+import time
+
+#==============================================Global Variables==============================
+global WindowX            
+windowX = 1200
+
+global WindowY
+windowY = 840  
+
+global FormulaOrange1
+FormulaOrange1 =  '#ee6d24'
+
+
+global FormulaBlue1
+FormulaBlue1 =  '#12bfd7'
+
+global FormulaBlack1
+FormulaBlack1 = '#1d323e'
+
+def mydebug(s):
+    print(s)
+>>>>>>> Stashed changes
 
 import math
 
@@ -29,9 +56,9 @@ class MainMid:
         self.arrow_dir = 1
         
         #PointerLengths
-        self.L_N = 0.5
-        self.L_E = 1
-        self.L_S = 0.5
+        self.L_N = 1
+        self.L_E = 3
+        self.L_S = 1
         self.L_W = 6
         
         # ALL attributes of class here
@@ -157,6 +184,7 @@ class pindex(object):
         mydebug(f"WinMid.__init__()")    # f-string of Python 3.6+
         self.window = window
         self.angle  = 0
+<<<<<<< Updated upstream
         self.temp = 0
         self.size = 30
         self.choice = 0
@@ -164,6 +192,17 @@ class pindex(object):
         self.arrow_dir = 1
         self.temp_dir  = 0.3
             
+=======
+        self.counter = 0
+        self.size = 30
+        self.choice = 0
+        self.p_width = 2
+        
+        self.centerx = 410
+        self.centery = 210
+        self.old_choice = 0
+        self.color = '#000000'
+>>>>>>> Stashed changes
         
         #PointerLengths
         self.L_N = 1
@@ -174,6 +213,7 @@ class pindex(object):
         # ALL attributes of class here
         self.rect = 0   # no rectangle yet
         self.index = 0  # no arrow yet
+<<<<<<< Updated upstream
         self.mid_sc = 0 # no canvas yet
         
         self.color = '#000000'
@@ -195,28 +235,87 @@ class pindex(object):
             self.centery = self.window.winfo_height()/2
             self.mid_sc = Canvas(self.window, width= self.window.winfo_width(), height=self.window.winfo_height())
             self.mid_sc.pack()
+=======
+        self.BotCanvas = 0 # no canvas yet
+        
+        
+        #PointerLengths
+        self.screen_1 = [3,3,3,-1]
+    def update_val(self):
+        self.angle += 10
+        
+        
+
+    def function_choose(self):
+        self.update_val()
+        mydebug(f"WinMid.function_choose() self.choice={self.choice} self.old_choice = {self.old_choice}")
+        #self.color_update()
+        
+        if(self.choice != self.old_choice):
+            mydebug(f"WinMid.function_choose() self.screen_clear()")
+            self.screen_clear()
+            self.old_choice = self.choice
+        
+        if self.BotCanvas == 0:
+            self.BotCanvas = Canvas(self.window, width= 840, height=420,borderwidth = 0.0, bg='snow')
+            self.BotCanvas.pack()
+>>>>>>> Stashed changes
+
 
         if(self.choice == 1):
             self.rotate_Poly()
+            
+                        
         elif(self.choice == 2):
-            self.screen_clear()
+
+            self.rect = self.BotCanvas.create_rectangle(100, 100, 200, 200, fill='red')
+            
+            
         elif(self.choice == 3):
+<<<<<<< Updated upstream
             self.draw_rect()
         elif(self.choice == 4):
             self.temp_gradient()
+=======
+            self.rect = self.BotCanvas.create_rectangle(200, 200, 200 + (self.angle//10)%1000 , 300, fill='blue')
+            
+        elif(self.choice == 4):
+
+            self.rect = self.BotCanvas.create_rectangle(300, 300, 400, 400, fill=self.color)
+         
+        elif(self.choice == 5):
+
+            self.rect = self.BotCanvas.create_rectangle(300, 300, 400, 400, fill=self.color)
+        
+        elif(self.choice == 6):
+            self.rect = self.BotCanvas.create_rectangle(300, 300, 400, 400, fill=self.color)
+           
+            
+            
+            
+>>>>>>> Stashed changes
         else:
             print("Do Nothing")
         
+
         # all drawing done
         # forget actual button press now
+<<<<<<< Updated upstream
         # => no endless creation of rectangles...
         #self.choice = 1
+=======
+
+>>>>>>> Stashed changes
 
     #Animated Polygon, Animated Polygon currently not updating        
     def delete_Poly(self):
         mydebug(f"WinMid.delete_Poly() self.index={self.index}")
         if self.index > 0: # avoid list of arrows now for simplicity
+<<<<<<< Updated upstream
             self.mid_sc.delete(self.index)
+=======
+            self.BotCanvas.delete(self.index)
+>>>>>>> Stashed changes
             self.index = 0
     
     
@@ -254,6 +353,7 @@ class pindex(object):
     
     def rotate_Poly(self):
         mydebug(f"WinMid.rotate_Poly() self.angle={self.angle} self.index={self.index}")
+<<<<<<< Updated upstream
         self.angle += self.arrow_dir # .. was 1 (too small to see something)
         
         if(self.angle >= 180 or self.angle <=0 ):
@@ -270,7 +370,31 @@ class pindex(object):
             ] 
         )    
 
+=======
+         # .. was 1 (too small to see something)
+        
+        # delete old arrow
+        self.delete_Poly() 
+        # draw new arrow
+        self.index = self.BotCanvas.create_polygon(
+            [       self.centerx + self.screen_1[0] * self.size * math.cos(math.radians(self.angle))      , self.centery + self.screen_1[0] * self.size* math.sin(math.radians(self.angle))  ,
+                    self.centerx + self.screen_1[1] * self.size * math.cos(math.radians(self.angle + 90)) , self.centery + self.screen_1[1] * self.size *math.sin(math.radians(self.angle + 90)),
+                    self.centerx + self.screen_1[2] * self.size * math.cos(math.radians(self.angle + 180)), self.centery + self.screen_1[2] * self.size * math.sin(math.radians(self.angle + 180)) ,  
+                    self.centerx + self.screen_1[3] * self.size * math.cos(math.radians(self.angle + 270)), self.centery + self.screen_1[3] * self.size * math.sin(math.radians(self.angle + 270))
+            ] )    
+    
+    def _from_rgb(rgb):
+        return "#%02x%02x%02x" % rgb 
+>>>>>>> Stashed changes
 
+    def color_update(self):
+        
+        
+        self.color = self._from_rgb((0,0,(self.angle//100)))
+        
+        
+        
+        
 
     def delete_rect(self):
         mydebug(f"WinMid.delete_rect()")
@@ -278,11 +402,17 @@ class pindex(object):
             self.mid_sc.delete(self.rect)
             self.rect = 0
 
+<<<<<<< Updated upstream
     def draw_rect(self):
         mydebug(f"WinMid.draw_rect()")
         self.delete_rect()
         self.rect = self.mid_sc.create_rectangle(0, 10, 100, 100, fill='red')
 
+=======
+   
+        
+      
+>>>>>>> Stashed changes
     def screen_clear(self):
         mydebug(f"WinMid.screen_clear()")
         self.delete_rect()
@@ -302,6 +432,7 @@ class Layout(Frame):
         
         self.height_split = 0.333
         self.width_split = 0.15
+<<<<<<< Updated upstream
         
 
         
@@ -314,6 +445,18 @@ class Layout(Frame):
         self.right3_button = Button(self, text = "Test", command = self.right3_, bg = FormulaBlue1)
         
         
+=======
+        self.time_mark = time.time()
+
+        self.left1_button = Button(self, text = "Test1", command = self.left1_, bg = FormulaOrange1)
+        self.left2_button = Button(self, text = "", command = self.left2_, bg = FormulaOrange1)
+        self.left3_button = Button(self, text = "", command = self.left3_, bg = FormulaOrange1)
+
+        self.right1_button = Button(self, text = "", command = self.right1_, bg = FormulaBlue1)
+        self.right2_button = Button(self, text = "", command = self.right2_, bg = FormulaBlue1)
+        self.right3_button = Button(self, text = "", command = self.right3_, bg = FormulaBlue1)
+
+>>>>>>> Stashed changes
         self.mid1 = Frame(parent, bd=1, relief=FLAT, bg=FormulaBlack1)
         self.mid2 = Frame(parent, bd=1, relief=FLAT, bg = 'snow')
 <<<<<<< Updated upstream
@@ -360,6 +503,7 @@ class Layout(Frame):
         self.screen_Updater()
         
 
+<<<<<<< Updated upstream
         
     def split_val(self, split_val):
         self.old_relx = relx
@@ -370,11 +514,15 @@ class Layout(Frame):
 
     def callback(self, event):
         self.left1_data.repos()
+=======
+        self.screen_Updater()
+>>>>>>> Stashed changes
 
 <<<<<<< Updated upstream
 =======
     #Call function to execute the object for the second window screen    
     def screen_Updater(self):
+<<<<<<< Updated upstream
         self.bot_window.function_choose()
         self.main_window.Update_val()
 #        self.main_window.draw_rect()
@@ -391,6 +539,14 @@ class Layout(Frame):
     def screen_Updater(self):
         print("DO Nothing")
 
+=======
+        self.BotMid.function_choose()
+        self.MainMid.Update_val()
+        print(int(time.time()*1000 - self.time_mark))
+        self.time_mark = time.time()*1000
+        #self.s_pointer.mid_sc.next
+        self.master.after(10, self.screen_Updater)
+>>>>>>> Stashed changes
 
 
     def left1_(self):
