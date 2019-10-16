@@ -3,6 +3,7 @@ from PIL import ImageTk
 from PIL import Image
 import math
 import time
+import serial
 
 #==============================================Global Variables==============================
 global WindowX            
@@ -25,6 +26,16 @@ def mydebug(s):
     print(s)
 
 
+
+ser = serial.Serial(
+    port='COM1',
+    baudrate=9600,
+    parity=serial.PARITY_ODD,
+    stopbits=serial.STOPBITS_TWO,
+    bytesize=serial.SEVENBITS
+)
+
+ser.isOpen()
 
 class MainMidWindow:
     def __init__(self, window):
@@ -251,7 +262,8 @@ class BotMidWindow:
     def delete_rect(self):
         mydebug(f"WinMid.delete_rect()")
         if self.rect > 0: # avoid list of rects now for simplicity
-            self.mid_sc.delete(self.rect)
+            self.BotCanvas
+            self.delete(self.rect)
             self.rect = 0
 
 
@@ -347,34 +359,35 @@ class Layout(Frame, BotMidWindow):
         self.MainMidWindow.Update_val()
         print(int(time.time()*1000 - self.time_mark))
         self.time_mark = time.time()*1000
+        ser.write(int(self.time) + int(time.time*1000) + '\r\n')
         self.master.after(10, self.screen_Updater)
 
 
 
     def left1_(self):
-        self.bot_window.choice = 1     
+        self.BotMidWindow.choice = 1     
 
 
         
     def left2_(self):
-        self.bot_window.choice = 2     
+        self.BotMidWindow.choice = 2     
 
 
         
     def left3_(self):
-        self.bot_window.choice = 3        
+        self.BotMidWindow.choice = 3        
 
 
     def right1_(self):
-        self.bot_window.choice = 4     
+        self.BotMidWindow.choice = 4     
 
            
     def right2_(self):
-        self.bot_window.choice = 5
+        self.BotMidWindow.choice = 5
 
            
     def right3_(self):
-        self.bot_window.choice = 6
+       self.BotMidWindow.choice = 6
 
 
 
